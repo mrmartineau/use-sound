@@ -175,6 +175,16 @@ For the user's sake, browsers don't allow websites to produce sound until the us
 
 If the user does happen to click with something that makes noise before this dependency has been loaded and fetched, it will be a no-op (everything will still work, but no sound effect will play). In my experience this is exceedingly rare.
 
+If you need to manually resume audio on iOS/Safari edge-cases, call `unlock` from a user gesture:
+
+```js
+const [play, { unlock }] = useSound('/click.mp3');
+
+const handleFirstGesture = () => {
+  unlock();
+};
+```
+
 ### Reactive configuration
 
 Consider the following snippet of code:
@@ -262,11 +272,13 @@ const [play, exposedData] = useSound('/meow.mp3');
 | -------- | -------------------------------- |
 | stop     | function ((id?: string) => void) |
 | pause    | function ((id?: string) => void) |
+| unlock   | function (() => void)            |
 | duration | number (or null)                 |
 | sound    | Howl (or null)                   |
 
 - `stop` is a function you can use to pre-emptively halt the sound.
 - `pause` is like `stop`, except it can be resumed from the same point. Unless you know you'll want to resume, you should use `stop`; `pause` hogs resources, since it expects to be resumed at some point.
+- `unlock` resumes the browser audio context when called from a user interaction.
 - `duration` is the length of the sample, in milliseconds. It will be `null` until the sample has been loaded. Note that for sprites, it's the length of the entire file.
 - `sound` is an escape hatch. It grants you access to the underlying `Howl` instance. See the [Howler documentation](https://github.com/goldfire/howler.js) to learn more about how to use it. Note that this will be `null` for the first few moments after the component mounts.
 

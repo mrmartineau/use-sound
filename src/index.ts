@@ -17,6 +17,7 @@ export default function useSound<T = any>(
   }: HookOptions<T> = {} as HookOptions
 ) {
   const HowlConstructor = React.useRef<HowlStatic | null>(null);
+  const HowlerGlobal = React.useRef<any>(null);
   const isHowlerLoaded = React.useRef(false);
   const latestLoadId = React.useRef(0);
   const activeSoundRef = React.useRef<Howl | null>(null);
@@ -43,6 +44,7 @@ export default function useSound<T = any>(
       // Depending on the module system used, `mod` might hold
       // the export directly, or it might be under `default`.
       HowlConstructor.current = mod.Howl ?? mod.default.Howl;
+      HowlerGlobal.current = mod.Howler ?? mod.default.Howler;
       isHowlerLoaded.current = true;
       setIsReady(true);
     });
@@ -217,12 +219,23 @@ export default function useSound<T = any>(
     [sound]
   );
 
+  const unlock = React.useCallback(() => {
+    if (!HowlerGlobal.current || !HowlerGlobal.current.ctx) {
+      return;
+    }
+
+    if (HowlerGlobal.current.ctx.state === 'suspended') {
+      HowlerGlobal.current.ctx.resume();
+    }
+  }, []);
+
   const returnedValue: ReturnedValue = [
     play,
     {
       sound,
       stop,
       pause,
+      unlock,
       duration,
     },
   ];
