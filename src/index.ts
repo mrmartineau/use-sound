@@ -17,8 +17,11 @@ export default function useSound<T = any>(
   }: HookOptions<T> = {} as HookOptions
 ) {
   const HowlConstructor = React.useRef<HowlStatic | null>(null);
-  const activeSpritePlaybackIds = React.useRef<Map<string, number>>(new Map());
+  const activeSpritePlaybackIds = React.useRef<Map<string, Set<number>>>(
+    new Map()
+  );
   const isMounted = React.useRef(false);
+  const hasSprite = Boolean(delegated.sprite);
 
   const [duration, setDuration] = React.useState<number | null>(null);
 
@@ -95,11 +98,11 @@ export default function useSound<T = any>(
       sound.volume(volume);
 
       // HACK: When a sprite is defined, `sound.rate()` throws an error, because Howler tries to reset the "_default" sprite, which doesn't exist. This is likely a bug within Howler, but I don’t have the bandwidth to investigate, so instead, we’re ignoring playbackRate changes when a sprite is defined.
-      if (!delegated.sprite) {
+      if (!hasSprite) {
         sound.rate(playbackRate);
       }
     }
-  }, [sound, volume, playbackRate, delegated.sprite]);
+  }, [sound, volume, playbackRate, hasSprite]);
 
   const play: PlayFunction = React.useCallback(
     (options?: PlayOptions) => {
@@ -116,7 +119,7 @@ export default function useSound<T = any>(
         activeSpritePlaybackIds.current.clear();
       }
 
-      if (typeof options.playbackRate !== 'undefined' && !delegated.sprite) {
+      if (typeof options.playbackRate !== 'undefined' && !hasSprite) {
         sound.rate(options.playbackRate);
       }
 
@@ -124,10 +127,29 @@ export default function useSound<T = any>(
       const playbackId = sound.play(spriteKey);
 
       if (typeof spriteKey === 'string' && typeof playbackId === 'number') {
-        activeSpritePlaybackIds.current.set(spriteKey, playbackId);
+        const playbackIdsForKey =
+          activeSpritePlaybackIds.current.get(spriteKey) ?? new Set<number>();
+
+        playbackIdsForKey.add(playbackId);
+        activeSpritePlaybackIds.current.set(spriteKey, playbackIdsForKey);
+
+        sound.once(
+          'end',
+          () => {
+            const ids = activeSpritePlaybackIds.current.get(spriteKey);
+            if (!ids) {
+              return;
+            }
+            ids.delete(playbackId);
+            if (ids.size === 0) {
+              activeSpritePlaybackIds.current.delete(spriteKey);
+            }
+          },
+          playbackId
+        );
       }
     },
-    [sound, soundEnabled, interrupt, delegated.sprite, id]
+    [sound, soundEnabled, interrupt, hasSprite, id]
   );
 
   const stop = React.useCallback(
@@ -137,9 +159,11 @@ export default function useSound<T = any>(
       }
 
       if (typeof id === 'string') {
-        const playbackId = activeSpritePlaybackIds.current.get(id);
-        if (typeof playbackId === 'number') {
-          sound.stop(playbackId);
+        const playbackIds = activeSpritePlaybackIds.current.get(id);
+        if (playbackIds && playbackIds.size > 0) {
+          playbackIds.forEach(playbackId => {
+            sound.stop(playbackId);
+          });
           activeSpritePlaybackIds.current.delete(id);
           return;
         }
@@ -161,9 +185,11 @@ export default function useSound<T = any>(
       }
 
       if (typeof id === 'string') {
-        const playbackId = activeSpritePlaybackIds.current.get(id);
-        if (typeof playbackId === 'number') {
-          sound.pause(playbackId);
+        const playbackIds = activeSpritePlaybackIds.current.get(id);
+        if (playbackIds && playbackIds.size > 0) {
+          playbackIds.forEach(playbackId => {
+            sound.pause(playbackId);
+          });
           return;
         }
       }
