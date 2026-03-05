@@ -24,6 +24,7 @@ export interface ExposedData {
   sound: Howl | null;
   stop: (id?: string) => void;
   pause: (id?: string) => void;
+  unlock: () => void;
   duration: number | null;
 }
 
