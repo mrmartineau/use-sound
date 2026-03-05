@@ -97,7 +97,7 @@ export default function useSound<T = any>(
         sound.rate(playbackRate);
       }
     }
-  }, [sound, volume, playbackRate]);
+  }, [sound, volume, playbackRate, delegated.sprite]);
 
   const play: PlayFunction = React.useCallback(
     (options?: PlayOptions) => {

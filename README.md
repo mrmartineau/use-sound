@@ -10,7 +10,7 @@ The web needs more (tasteful) sounds!
 - ✨ Built with Typescript
 - 🗣 Uses a powerful, battle-tested audio utility: [**Howler.js**](https://howlerjs.com/)
 
-[![Minified file size](https://img.badgesize.io/https://www.unpkg.com/use-sound/dist/use-sound.esm.js.svg)](https://bundlephobia.com/result?p=use-sound) [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT) [![NPM version](https://img.shields.io/npm/v/use-sound)](https://www.npmjs.com/package/use-sound) [![Code of Conduct](https://img.shields.io/badge/Code%20of-conduct-d03eaf?style=flat)](https://github.com/joshwcomeau/use-sound/blob/master/CONDUCT.md)
+[![Minified file size](https://img.badgesize.io/https://www.unpkg.com/@mrmartineau/use-sound/dist/use-sound.esm.js.svg)](https://bundlephobia.com/result?p=%40mrmartineau%2Fuse-sound) [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT) [![NPM version](https://img.shields.io/npm/v/@mrmartineau/use-sound)](https://www.npmjs.com/package/@mrmartineau/use-sound) [![Code of Conduct](https://img.shields.io/badge/Code%20of-conduct-d03eaf?style=flat)](https://github.com/mrmartineau/use-sound/blob/main/CONDUCT.md)
 
 This library only works with React DOM, but @remigallego created an alternative for React Native! Check out [react-native-use-sound](https://github.com/remigallego/react-native-use-sound).
 
@@ -18,11 +18,9 @@ This library only works with React DOM, but @remigallego created an alternative 
 
 ## Status
 
-This project is “semi-maintained” 😅
+This fork is actively maintained to address long-standing issues in the upstream project.
 
-I don't have the bandwidth right now to look into edge-case issues or help troubleshoot, but I plan on keeping it up-to-date with major React releases, and fixing issues that are both serious and common.
-
-If you have ideas for features, or run into strange quirks, I thoroughly recommend forking the project and making it your own! It might seem intimidating, but the source isn't as complex as many other NPM packages; I defer all the hard audio work to [Howler](https://howlerjs.com/)). If you've been using React for a while and are comfortable with hooks, you should feel right at home with this package's code.
+If you are looking for the original package, it is still available as `use-sound`. This fork is published as `@mrmartineau/use-sound`.
 
 ---
 
@@ -31,16 +29,16 @@ If you have ideas for features, or run into strange quirks, I thoroughly recomme
 Package can be added using **yarn**:
 
 ```bash
-yarn add use-sound
+yarn add @mrmartineau/use-sound
 ```
 
 Or, use NPM:
 
 ```bash
-npm install use-sound
+npm install @mrmartineau/use-sound
 ```
 
-UMD build available on [unpkg](https://www.unpkg.com/browse/use-sound@0.3.0/dist/use-sound.cjs.production.min.js).
+UMD build available on [unpkg](https://www.unpkg.com/browse/@mrmartineau/use-sound/dist/use-sound.cjs.production.min.js).
 
 If your project uses TypeScript, you should also install the `@types/howler` package as a dev dependency.
 
@@ -59,7 +57,7 @@ You can also **[view the storybook](https://use-sound.netlify.app/)**, which inc
 ### Play sound on click
 
 ```js
-import useSound from 'use-sound';
+import useSound from '@mrmartineau/use-sound';
 
 import boopSfx from '../../sounds/boop.mp3';
 
@@ -77,7 +75,7 @@ This demo only plays the sound while hovering over an element. The sound pauses 
 > NOTE: Many browsers disable sounds until the user has clicked somewhere on the page. If you're not hearing anything with this example, try clicking anywhere and trying again.
 
 ```js
-import useSound from 'use-sound';
+import useSound from '@mrmartineau/use-sound';
 
 import fanfareSfx from '../../sounds/fanfare.mp3';
 
@@ -99,7 +97,7 @@ const FanfareButton = () => {
 With the `playbackRate` option, you can change the speed/pitch of the sample. This example plays a sound and makes it 10% faster each time:
 
 ```js
-import useSound from 'use-sound';
+import useSound from '@mrmartineau/use-sound';
 
 import glugSfx from '../../sounds/glug.mp3';
 
