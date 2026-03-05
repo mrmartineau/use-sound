@@ -1,3 +1,5 @@
+import { Howl } from 'howler';
+
 export type SpriteMap = {
   [key: string]: [number, number];
 };

@@ -4,14 +4,26 @@
   "version": "5.0.0",
   "module": "dist/use-sound.esm.js",
   "exports": {
-    "types": "./dist/index.d.ts",
-    "import": "./dist/use-sound.esm.js",
-    "require": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/use-sound.esm.js",
+      "require": "./dist/index.js",
+      "default": "./dist/use-sound.esm.js"
+    },
+    "./package.json": "./package.json"
   },
   "repository": "github:joshwcomeau/use-sound",
   "license": "MIT",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "typings": "dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/index.d.ts"
+      ]
+    }
+  },
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
