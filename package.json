@@ -35,7 +35,8 @@
     "dev": "tsup src/index.ts --format cjs,esm --target es2020 --dts --sourcemap --external react --external react-dom --external howler --watch",
     "prepare": "tsup src/index.ts --format cjs,esm --target es2020 --dts --sourcemap --clean --external react --external react-dom --external howler",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "release": "release-it"
   },
   "files": [
     "dist"
@@ -76,6 +77,7 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-spring": "^10.0.3",
+    "release-it": "^19.2.4",
     "storybook": "^10.2.15",
     "styled-components": "^6.3.11",
     "ts-loader": "^9.5.4",
