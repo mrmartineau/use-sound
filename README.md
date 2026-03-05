@@ -18,9 +18,9 @@ This library only works with React DOM, but @remigallego created an alternative 
 
 ## Status
 
-This fork is actively maintained to address long-standing issues in the upstream project.
+This repository is a maintained fork of Josh Comeau's original `use-sound` package.
 
-If you are looking for the original package, it is still available as `use-sound`. This fork is published as `@mrmartineau/use-sound`.
+The original package is still available as `use-sound`. This maintained fork is published as `@mrmartineau/use-sound` to address long-standing issues in upstream.
 
 ---
 
@@ -29,13 +29,10 @@ If you are looking for the original package, it is still available as `use-sound
 Package can be added using **yarn**:
 
 ```bash
+pnpm i @mrmartineau/use-sound
+bun add @mrmartineau/use-sound
+npm i @mrmartineau/use-sound
 yarn add @mrmartineau/use-sound
-```
-
-Or, use NPM:
-
-```bash
-npm install @mrmartineau/use-sound
 ```
 
 UMD build available on [unpkg](https://www.unpkg.com/browse/@mrmartineau/use-sound/dist/use-sound.cjs.production.min.js).
