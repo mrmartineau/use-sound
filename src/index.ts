@@ -19,6 +19,7 @@ export default function useSound<T = any>(
   const HowlConstructor = React.useRef<HowlStatic | null>(null);
   const HowlerGlobal = React.useRef<any>(null);
   const isMounted = React.useRef(false);
+  const hasSprite = Boolean(delegated.sprite);
 
   const [duration, setDuration] = React.useState<number | null>(null);
 
@@ -95,11 +96,11 @@ export default function useSound<T = any>(
       sound.volume(volume);
 
       // HACK: When a sprite is defined, `sound.rate()` throws an error, because Howler tries to reset the "_default" sprite, which doesn't exist. This is likely a bug within Howler, but I don’t have the bandwidth to investigate, so instead, we’re ignoring playbackRate changes when a sprite is defined.
-      if (!delegated.sprite) {
+      if (!hasSprite) {
         sound.rate(playbackRate);
       }
     }
-  }, [sound, volume, playbackRate, delegated.sprite]);
+  }, [sound, volume, playbackRate, hasSprite]);
 
   const play: PlayFunction = React.useCallback(
     (options?: PlayOptions) => {
