@@ -40,7 +40,7 @@ Unacceptable behavior from any community member, including collaborators and tho
 
 Anyone asked to stop unacceptable behavior is expected to comply immediately.
 
-If a community member engages in unacceptable behavior, the project author (Josh Comeau) may take any action they deem appropriate, up to and including a temporary ban or permanent expulsion from the community without warning. Individuals who have been banned are not allowed to continue participating in discussions or contributing in any way.
+If a community member engages in unacceptable behavior, the project author may take any action they deem appropriate, up to and including a temporary ban or permanent expulsion from the community without warning. Individuals who have been banned are not allowed to continue participating in discussions or contributing in any way.
 
 ## If You Witness or Are Subject to Unacceptable Behavior
 

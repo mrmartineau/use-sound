@@ -4,12 +4,6 @@ Thanks for your interest in contributing to this project!
 
 ## The Deal
 
-Hi! I'm Josh. I'm the creator and maintainer of this package.
-
-Speaking frankly: I don't have the bandwidth to support a thriving community of contributors to this project. And I have pretty modest goals for this project: It should make it easy for users to play sound effects in their React apps. And it should expose Howler for users who want to do advanced things, as an escape hatch.
-
-I'm not really looking to make sweeping enhancements or broad changes. We should not be implementing any "novel" functionality. I want to keep it up-to-date and functional, and that's pretty much it.
-
 If you encounter bugs, please do open an issue describing the bug and including steps to easily reproduce it (bonus points for a CodeSandbox that demonstrates the problem).
 
 If you have an idea for an enhancement, go ahead and share it via an issue, but please don't expect a timely response.

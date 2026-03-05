@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import useSound from '@';
+import useSound from '../../src';
 
 import Button from '../helpers/Button';
 

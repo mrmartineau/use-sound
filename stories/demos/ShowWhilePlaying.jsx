@@ -1,5 +1,5 @@
 import React from 'react';
-import useSound from '@';
+import useSound from '../../src';
 
 import dunDunDunSfx from '../sounds/dun-dun-dun.mp3';
 import Button from '../helpers/Button';

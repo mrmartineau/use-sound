@@ -2,7 +2,7 @@ import React from 'react';
 
 import useOnMount from './use-on-mount';
 
-import { HookOptions, PlayOptions, PlayFunction, ReturnedValue } from './types';
+import { HookOptions, PlayFunction, PlayOptions, ReturnedValue } from './types';
 
 export default function useSound<T = any>(
   src: string | string[],
@@ -16,50 +16,49 @@ export default function useSound<T = any>(
     ...delegated
   }: HookOptions<T> = {} as HookOptions
 ) {
-  const HowlConstructor = React.useRef<HowlStatic | null>(null);
+  const HowlConstructor = React.useRef<typeof Howl | null>(null);
+  const howlerGlobalRef = React.useRef<HowlerGlobal | null>(null);
+  const isHowlerLoaded = React.useRef(false);
+  const latestLoadId = React.useRef(0);
+  const activeSoundRef = React.useRef<Howl | null>(null);
+  const activeSpritePlaybackIds = React.useRef<Map<string, Set<number>>>(
+    new Map()
+  );
   const isMounted = React.useRef(false);
+  const hasSprite = Boolean(delegated.sprite);
 
   const [duration, setDuration] = React.useState<number | null>(null);
+  const [isReady, setIsReady] = React.useState(false);
 
   const [sound, setSound] = React.useState<Howl | null>(null);
 
-  const handleLoad = function() {
-    if (typeof onload === 'function') {
-      // @ts-ignore
-      onload.call(this);
-    }
-
-    if (isMounted.current) {
-      // @ts-ignore
-      setDuration(this.duration() * 1000);
-    }
-
-    // @ts-ignore
-    setSound(this);
-  };
-
   // We want to lazy-load Howler, since sounds can't play on load anyway.
   useOnMount(() => {
+    isMounted.current = true;
+
     import('howler').then(mod => {
       if (!isMounted.current) {
-        // Depending on the module system used, `mod` might hold
-        // the export directly, or it might be under `default`.
-        HowlConstructor.current = mod.Howl ?? mod.default.Howl;
-
-        isMounted.current = true;
-
-        new HowlConstructor.current({
-          src: Array.isArray(src) ? src : [src],
-          volume,
-          rate: playbackRate,
-          onload: handleLoad,
-          ...delegated,
-        });
+        return;
       }
+
+      // Depending on the module system used, `mod` might hold
+      // the export directly, or it might be under `default`.
+      HowlConstructor.current = mod.Howl ?? mod.default.Howl;
+      howlerGlobalRef.current = mod.Howler ?? mod.default.Howler;
+      isHowlerLoaded.current = true;
+      setIsReady(true);
     });
 
     return () => {
       isMounted.current = false;
+      isHowlerLoaded.current = false;
+      latestLoadId.current += 1;
+      if (activeSoundRef.current) {
+        activeSoundRef.current.stop();
+        activeSoundRef.current.unload();
+        activeSoundRef.current = null;
+      }
+      activeSpritePlaybackIds.current.clear();
     };
   });
 
@@ -67,16 +66,44 @@ export default function useSound<T = any>(
   // the Howl instance. This is because Howler doesn't expose a way to
   // tweak the sound
   React.useEffect(() => {
-    if (HowlConstructor.current && sound) {
-      setSound(
-        new HowlConstructor.current({
-          src: Array.isArray(src) ? src : [src],
-          volume,
-          onload: handleLoad,
-          ...delegated,
-        })
-      );
+    if (!HowlConstructor.current || !isHowlerLoaded.current) {
+      return;
     }
+
+    const currentLoadId = latestLoadId.current + 1;
+    latestLoadId.current = currentLoadId;
+
+    const handleLoad = function(this: Howl) {
+      if (typeof onload === 'function') {
+        onload.call(this);
+      }
+
+      if (!isMounted.current || currentLoadId !== latestLoadId.current) {
+        return;
+      }
+
+      setDuration(this.duration() * 1000);
+    };
+
+    const nextSound = new HowlConstructor.current({
+      src: Array.isArray(src) ? src : [src],
+      volume,
+      rate: playbackRate,
+      onload: handleLoad,
+      ...delegated,
+    });
+
+    const previousSound = activeSoundRef.current;
+    if (previousSound) {
+      previousSound.stop();
+      previousSound.unload();
+    }
+    // Any tracked playback ids belong to the previous Howl instance.
+    // Clear them so stop/pause lookups never target stale ids.
+    activeSpritePlaybackIds.current.clear();
+    setSound(nextSound);
+    activeSoundRef.current = nextSound;
+
     // The linter wants to run this effect whenever ANYTHING changes,
     // but very specifically I only want to recreate the Howl instance
     // when the `src` changes. Other changes should have no effect.
@@ -84,7 +111,7 @@ export default function useSound<T = any>(
     // ifinite loop so we need to stringify it, for more details check
     // https://github.com/facebook/react/issues/14476#issuecomment-471199055
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(src)]);
+  }, [JSON.stringify(src), isReady]);
 
   // Whenever volume/playbackRate are changed, change those properties
   // on the sound instance.
@@ -93,11 +120,11 @@ export default function useSound<T = any>(
       sound.volume(volume);
 
       // HACK: When a sprite is defined, `sound.rate()` throws an error, because Howler tries to reset the "_default" sprite, which doesn't exist. This is likely a bug within Howler, but I don’t have the bandwidth to investigate, so instead, we’re ignoring playbackRate changes when a sprite is defined.
-      if (!delegated.sprite) {
+      if (!hasSprite) {
         sound.rate(playbackRate);
       }
     }
-  }, [sound, volume, playbackRate]);
+  }, [sound, volume, playbackRate, hasSprite]);
 
   const play: PlayFunction = React.useCallback(
     (options?: PlayOptions) => {
@@ -111,36 +138,104 @@ export default function useSound<T = any>(
 
       if (interrupt) {
         sound.stop();
+        activeSpritePlaybackIds.current.clear();
       }
 
-      if (options.playbackRate) {
+      if (typeof options.playbackRate !== 'undefined' && !hasSprite) {
         sound.rate(options.playbackRate);
       }
 
-      sound.play(options.id);
+      const spriteKey = options.id ?? id;
+      const playbackId = sound.play(spriteKey);
+
+      if (typeof spriteKey === 'string' && typeof playbackId === 'number') {
+        const playbackIdsForKey =
+          activeSpritePlaybackIds.current.get(spriteKey) ?? new Set<number>();
+
+        playbackIdsForKey.add(playbackId);
+        activeSpritePlaybackIds.current.set(spriteKey, playbackIdsForKey);
+
+        sound.once(
+          'end',
+          () => {
+            const ids = activeSpritePlaybackIds.current.get(spriteKey);
+            if (!ids) {
+              return;
+            }
+            ids.delete(playbackId);
+            if (ids.size === 0) {
+              activeSpritePlaybackIds.current.delete(spriteKey);
+            }
+          },
+          playbackId
+        );
+      }
     },
-    [sound, soundEnabled, interrupt]
+    [sound, soundEnabled, interrupt, hasSprite, id]
   );
 
   const stop = React.useCallback(
-    id => {
+    (id?: string) => {
       if (!sound) {
         return;
       }
-      sound.stop(id);
+
+      if (typeof id === 'string') {
+        const playbackIds = activeSpritePlaybackIds.current.get(id);
+        if (playbackIds && playbackIds.size > 0) {
+          playbackIds.forEach(playbackId => {
+            sound.stop(playbackId);
+          });
+          activeSpritePlaybackIds.current.delete(id);
+          return;
+        }
+      }
+
+      sound.stop(id as any);
+
+      if (typeof id === 'undefined') {
+        activeSpritePlaybackIds.current.clear();
+      }
     },
     [sound]
   );
 
   const pause = React.useCallback(
-    id => {
+    (id?: string) => {
       if (!sound) {
         return;
       }
-      sound.pause(id);
+
+      if (typeof id === 'string') {
+        const playbackIds = activeSpritePlaybackIds.current.get(id);
+        if (playbackIds && playbackIds.size > 0) {
+          playbackIds.forEach(playbackId => {
+            sound.pause(playbackId);
+          });
+          return;
+        }
+      }
+
+      sound.pause(id as any);
     },
     [sound]
   );
+
+  const unlock = React.useCallback(() => {
+    if (!howlerGlobalRef.current || !howlerGlobalRef.current.ctx) {
+      return;
+    }
+
+    if (howlerGlobalRef.current.ctx.state === 'suspended') {
+      try {
+        void howlerGlobalRef.current.ctx.resume().catch(() => {
+          // Ignore resume failures; unlock is a best-effort helper.
+        });
+      } catch {
+        // Ignore sync resume errors; unlock is a best-effort helper.
+      }
+    }
+  }, []);
 
   const returnedValue: ReturnedValue = [
     play,
@@ -148,6 +243,7 @@ export default function useSound<T = any>(
       sound,
       stop,
       pause,
+      unlock,
       duration,
     },
   ];

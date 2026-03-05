@@ -1,3 +1,5 @@
+import { Howl } from 'howler';
+
 export type SpriteMap = {
   [key: string]: [number, number];
 };
@@ -24,6 +26,7 @@ export interface ExposedData {
   sound: Howl | null;
   stop: (id?: string) => void;
   pause: (id?: string) => void;
+  unlock: () => void;
   duration: number | null;
 }
 

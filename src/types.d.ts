@@ -1,25 +1,27 @@
-/// <reference types="howler" />
+import { Howl } from 'howler';
 export declare type SpriteMap = {
   [key: string]: [number, number];
 };
-export interface HookOptions {
+export declare type HookOptions<T = Record<string, unknown>> = T & {
+  id?: string;
   volume?: number;
   playbackRate?: number;
   interrupt?: boolean;
   soundEnabled?: boolean;
   sprite?: SpriteMap;
   onload?: () => void;
-}
+};
 export interface PlayOptions {
   id?: string;
   forceSoundEnabled?: boolean;
   playbackRate?: number;
 }
-export declare type PlayFunction = (options: PlayOptions) => void;
+export declare type PlayFunction = (options?: PlayOptions) => void;
 export interface ExposedData {
   sound: Howl | null;
   stop: (id?: string) => void;
   pause: (id?: string) => void;
+  unlock: () => void;
   duration: number | null;
 }
 export declare type ReturnedValue = [PlayFunction, ExposedData];

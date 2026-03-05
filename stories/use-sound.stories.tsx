@@ -1,82 +1,76 @@
+import 'focus-visible';
 import React from 'react';
-import { withKnobs, radios } from '@storybook/addon-knobs';
-
-import Wrapper from './helpers/Wrapper';
-
 import CheckboxDemo from './demos/Checkbox';
-import SimpleDemo from './demos/Simple';
+import DrumMachineDemo from './demos/DrumMachine';
 import HoverDemo from './demos/Hover';
 import RisingDemo from './demos/Rising';
-import DrumMachineDemo from './demos/DrumMachine';
-import MultipleSourcesDemo from './demos/SimpleMultipleSources';
 import ShowWhilePlayingDemo from './demos/ShowWhilePlaying';
+import SimpleDemo from './demos/Simple';
+import MultipleSourcesDemo from './demos/SimpleMultipleSources';
+import Wrapper from './helpers/Wrapper';
 
-import 'focus-visible';
-
-export default {
+const meta = {
   title: 'useSound',
-  decorators: [withKnobs, storyFn => <Wrapper>{storyFn()}</Wrapper>],
+  decorators: [
+    Story =>
+      React.createElement(
+        Wrapper,
+        null,
+        React.createElement(Story, null)
+      ),
+  ],
 };
 
-export const Simple = () => {
-  return <SimpleDemo />;
-};
+export default meta;
 
-Simple.story = {
+export const Simple = {
   name: 'Default',
+  render: () => React.createElement(SimpleDemo),
 };
 
-export const Checkbox = () => (
-  <div style={{ display: 'flex', width: 160, justifyContent: 'space-between' }}>
-    <CheckboxDemo />
-  </div>
-);
-
-Checkbox.story = {
+export const Checkbox = {
   name: 'Checkbox',
+  render: () => (
+    <div style={{ display: 'flex', width: 160, justifyContent: 'space-between' }}>
+      <CheckboxDemo />
+    </div>
+  ),
 };
 
-export const Hovering = () => {
-  return <HoverDemo />;
-};
-
-Hovering.story = {
+export const Hovering = {
   name: 'Play when hovering',
+  render: () => React.createElement(HoverDemo),
 };
 
-export const Rising = () => {
-  return <RisingDemo />;
-};
-
-Rising.story = {
+export const Rising = {
   name: 'Rising pitch',
+  render: () => React.createElement(RisingDemo),
 };
 
-export const DrumMachine = () => {
-  return <DrumMachineDemo />;
-};
-
-DrumMachine.story = {
+export const DrumMachine = {
   name: 'Drum machine (sprites)',
+  render: () => React.createElement(DrumMachineDemo),
 };
 
-export const MultipleSources = () => {
-  const options = {
-    'wav/mp3': 'wav_mp3',
-    'mp3/wav': 'mp3_wav',
-  };
-  const value = radios('Source', options, 'wav_mp3', 'group1');
-  return <MultipleSourcesDemo order={value} />;
-};
-
-MultipleSources.story = {
+export const MultipleSources = {
   name: 'Multiple sources support',
+  args: {
+    order: 'wav_mp3',
+  },
+  argTypes: {
+    order: {
+      control: { type: 'inline-radio' },
+      options: ['wav_mp3', 'mp3_wav'],
+      description: 'Source priority order for supported formats',
+      table: {
+        type: { summary: "'wav_mp3' | 'mp3_wav'" },
+      },
+    },
+  },
+  render: ({ order }) => React.createElement(MultipleSourcesDemo, { order }),
 };
 
-export const ShowWhilePlaying = () => {
-  return <ShowWhilePlayingDemo />;
-};
-
-ShowWhilePlaying.story = {
+export const ShowWhilePlaying = {
   name: 'With Howler events (show while playing)',
+  render: () => React.createElement(ShowWhilePlayingDemo),
 };
