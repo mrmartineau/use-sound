@@ -2,7 +2,7 @@ import React from 'react';
 
 import useOnMount from './use-on-mount';
 
-import { HookOptions, PlayOptions, PlayFunction, ReturnedValue } from './types';
+import { HookOptions, PlayFunction, PlayOptions, ReturnedValue } from './types';
 
 export default function useSound<T = any>(
   src: string | string[],
@@ -17,7 +17,7 @@ export default function useSound<T = any>(
   }: HookOptions<T> = {} as HookOptions
 ) {
   const HowlConstructor = React.useRef<HowlStatic | null>(null);
-  const HowlerGlobal = React.useRef<any>(null);
+  const howlerGlobalRef = React.useRef<HowlerGlobal | null>(null);
   const isHowlerLoaded = React.useRef(false);
   const latestLoadId = React.useRef(0);
   const activeSoundRef = React.useRef<Howl | null>(null);
@@ -44,7 +44,7 @@ export default function useSound<T = any>(
       // Depending on the module system used, `mod` might hold
       // the export directly, or it might be under `default`.
       HowlConstructor.current = mod.Howl ?? mod.default.Howl;
-      HowlerGlobal.current = mod.Howler ?? mod.default.Howler;
+      howlerGlobalRef.current = mod.Howler ?? mod.default.Howler;
       isHowlerLoaded.current = true;
       setIsReady(true);
     });
@@ -93,13 +93,15 @@ export default function useSound<T = any>(
       ...delegated,
     });
 
-    setSound(previousSound => {
-      if (previousSound) {
-        previousSound.stop();
-        previousSound.unload();
-      }
-      return nextSound;
-    });
+    const previousSound = activeSoundRef.current;
+    if (previousSound) {
+      previousSound.stop();
+      previousSound.unload();
+    }
+    // Any tracked playback ids belong to the previous Howl instance.
+    // Clear them so stop/pause lookups never target stale ids.
+    activeSpritePlaybackIds.current.clear();
+    setSound(nextSound);
     activeSoundRef.current = nextSound;
 
     // The linter wants to run this effect whenever ANYTHING changes,
@@ -220,12 +222,18 @@ export default function useSound<T = any>(
   );
 
   const unlock = React.useCallback(() => {
-    if (!HowlerGlobal.current || !HowlerGlobal.current.ctx) {
+    if (!howlerGlobalRef.current || !howlerGlobalRef.current.ctx) {
       return;
     }
 
-    if (HowlerGlobal.current.ctx.state === 'suspended') {
-      HowlerGlobal.current.ctx.resume();
+    if (howlerGlobalRef.current.ctx.state === 'suspended') {
+      try {
+        void howlerGlobalRef.current.ctx.resume().catch(() => {
+          // Ignore resume failures; unlock is a best-effort helper.
+        });
+      } catch {
+        // Ignore sync resume errors; unlock is a best-effort helper.
+      }
     }
   }, []);
 

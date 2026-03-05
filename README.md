@@ -26,7 +26,7 @@ The original package is still available as `use-sound`. This maintained fork is 
 
 ## Installation
 
-Package can be added using **yarn**:
+Package can be added using your preferred package manager:
 
 ```bash
 pnpm i @mrmartineau/use-sound
