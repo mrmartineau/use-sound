@@ -189,7 +189,7 @@ export default function useSound<T = any>(
         }
       }
 
-      sound.stop(id as number | string | undefined);
+      sound.stop(id as any);
 
       if (typeof id === 'undefined') {
         activeSpritePlaybackIds.current.clear();
@@ -214,7 +214,7 @@ export default function useSound<T = any>(
         }
       }
 
-      sound.pause(id as number | string | undefined);
+      sound.pause(id as any);
     },
     [sound]
   );
