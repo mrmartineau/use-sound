@@ -1,28 +1,30 @@
 import React from 'react';
+import { animated, useSpring } from 'react-spring';
 import styled from 'styled-components';
-import useSound from '@';
-import { useSpring, animated } from 'react-spring';
+import useSound from '../../src';
 
-import popDown from '../sounds/pop-down.mp3';
-import popUpOn from '../sounds/pop-up-on.mp3';
-import popUpOff from '../sounds/pop-up-off.mp3';
 import { PRIMARY } from '../helpers/constants';
+import popDown from '../sounds/pop-down.mp3';
+import popUpOff from '../sounds/pop-up-off.mp3';
+import popUpOn from '../sounds/pop-up-on.mp3';
 
 const BORDER_WIDTH = 2;
 
 function CheckboxDemo() {
   const [isChecked, setIsChecked] = React.useState(false);
 
-  const [playActive] = useSound(popDown, { id: 'active', volume: 0.25 });
-  const [playOn] = useSound(popUpOn, { id: 'on', volume: 0.25 });
-  const [playOff] = useSound(popUpOff, { id: 'off', volume: 0.25 });
+  const [playActive] = useSound(popDown, { volume: 0.25 });
+  const [playOn] = useSound(popUpOn, { volume: 0.25 });
+  const [playOff] = useSound(popUpOff, { volume: 0.25 });
 
   return (
     <Checkbox
       name="demo-checkbox"
       checked={isChecked}
       size={24}
-      onChange={() => setIsChecked(!isChecked)}
+      onChange={() => {
+        setIsChecked(!isChecked);
+      }}
       onMouseDown={playActive}
       onMouseUp={() => {
         isChecked ? playOff() : playOn();
@@ -33,9 +35,9 @@ function CheckboxDemo() {
 
 const Checkbox = ({
   size = 18,
-  name,
+  name = 'checkbox',
   checked,
-  label,
+  label = 'Checkbox',
   onChange,
   onMouseDown,
   onMouseUp,
@@ -65,11 +67,11 @@ const Checkbox = ({
       <RealCheckbox
         onMouseDown={() => {
           setActive(true);
-          onMouseDown();
+          onMouseDown?.();
         }}
         onMouseUp={() => {
           setActive(false);
-          onMouseUp();
+          onMouseUp?.();
         }}
         onChange={onChange}
         onClick={onChange}
