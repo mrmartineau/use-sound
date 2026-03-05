@@ -1,40 +1,42 @@
+import React from 'react';
+
 declare const _default: {
   title: string;
   decorators: ((...args: any) => any)[];
 };
 export default _default;
 export declare const Simple: {
-  (): JSX.Element;
+  (): React.JSX.Element;
   story: {
     name: string;
   };
 };
 export declare const Checkbox: {
-  (): JSX.Element;
+  (): React.JSX.Element;
   story: {
     name: string;
   };
 };
 export declare const Hovering: {
-  (): JSX.Element;
+  (): React.JSX.Element;
   story: {
     name: string;
   };
 };
 export declare const Rising: {
-  (): JSX.Element;
+  (): React.JSX.Element;
   story: {
     name: string;
   };
 };
 export declare const DrumMachine: {
-  (): JSX.Element;
+  (): React.JSX.Element;
   story: {
     name: string;
   };
 };
 export declare const MultipleSources: {
-  (): JSX.Element;
+  (): React.JSX.Element;
   story: {
     name: string;
   };

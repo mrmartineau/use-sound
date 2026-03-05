@@ -16,7 +16,7 @@ export default function useSound<T = any>(
     ...delegated
   }: HookOptions<T> = {} as HookOptions
 ) {
-  const HowlConstructor = React.useRef<HowlStatic | null>(null);
+  const HowlConstructor = React.useRef<typeof Howl | null>(null);
   const howlerGlobalRef = React.useRef<HowlerGlobal | null>(null);
   const isHowlerLoaded = React.useRef(false);
   const latestLoadId = React.useRef(0);
@@ -175,7 +175,7 @@ export default function useSound<T = any>(
   );
 
   const stop = React.useCallback(
-    id => {
+    (id?: string) => {
       if (!sound) {
         return;
       }
@@ -201,7 +201,7 @@ export default function useSound<T = any>(
   );
 
   const pause = React.useCallback(
-    id => {
+    (id?: string) => {
       if (!sound) {
         return;
       }
