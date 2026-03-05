@@ -17,6 +17,7 @@ export default function useSound<T = any>(
   }: HookOptions<T> = {} as HookOptions
 ) {
   const HowlConstructor = React.useRef<HowlStatic | null>(null);
+  const activeSpritePlaybackIds = React.useRef<Map<string, number>>(new Map());
   const isMounted = React.useRef(false);
 
   const [duration, setDuration] = React.useState<number | null>(null);
@@ -60,6 +61,7 @@ export default function useSound<T = any>(
 
     return () => {
       isMounted.current = false;
+      activeSpritePlaybackIds.current.clear();
     };
   });
 
@@ -97,7 +99,7 @@ export default function useSound<T = any>(
         sound.rate(playbackRate);
       }
     }
-  }, [sound, volume, playbackRate]);
+  }, [sound, volume, playbackRate, delegated.sprite]);
 
   const play: PlayFunction = React.useCallback(
     (options?: PlayOptions) => {
@@ -111,15 +113,21 @@ export default function useSound<T = any>(
 
       if (interrupt) {
         sound.stop();
+        activeSpritePlaybackIds.current.clear();
       }
 
-      if (options.playbackRate) {
+      if (typeof options.playbackRate !== 'undefined' && !delegated.sprite) {
         sound.rate(options.playbackRate);
       }
 
-      sound.play(options.id);
+      const spriteKey = options.id ?? id;
+      const playbackId = sound.play(spriteKey);
+
+      if (typeof spriteKey === 'string' && typeof playbackId === 'number') {
+        activeSpritePlaybackIds.current.set(spriteKey, playbackId);
+      }
     },
-    [sound, soundEnabled, interrupt]
+    [sound, soundEnabled, interrupt, delegated.sprite, id]
   );
 
   const stop = React.useCallback(
@@ -127,7 +135,21 @@ export default function useSound<T = any>(
       if (!sound) {
         return;
       }
-      sound.stop(id);
+
+      if (typeof id === 'string') {
+        const playbackId = activeSpritePlaybackIds.current.get(id);
+        if (typeof playbackId === 'number') {
+          sound.stop(playbackId);
+          activeSpritePlaybackIds.current.delete(id);
+          return;
+        }
+      }
+
+      sound.stop(id as number | string | undefined);
+
+      if (typeof id === 'undefined') {
+        activeSpritePlaybackIds.current.clear();
+      }
     },
     [sound]
   );
@@ -137,7 +159,16 @@ export default function useSound<T = any>(
       if (!sound) {
         return;
       }
-      sound.pause(id);
+
+      if (typeof id === 'string') {
+        const playbackId = activeSpritePlaybackIds.current.get(id);
+        if (typeof playbackId === 'number') {
+          sound.pause(playbackId);
+          return;
+        }
+      }
+
+      sound.pause(id as number | string | undefined);
     },
     [sound]
   );
