@@ -1,5 +1,5 @@
 {
-  "name": "use-sound",
+  "name": "@mrmartineau/use-sound",
   "author": "Josh Comeau",
   "version": "5.0.0",
   "module": "dist/use-sound.esm.js",
@@ -12,8 +12,11 @@
     },
     "./package.json": "./package.json"
   },
-  "repository": "github:joshwcomeau/use-sound",
+  "repository": "github:mrmartineau/use-sound",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "typings": "dist/index.d.ts",
