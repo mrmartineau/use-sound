@@ -1,26 +1,17 @@
 {
   "name": "@mrmartineau/use-sound",
+  "version": "5.1.0",
+  "license": "MIT",
   "author": "Josh Comeau",
   "contributors": [
     "Zander Martineau"
   ],
-  "version": "5.1.0",
-  "module": "dist/index.mjs",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "default": "./dist/index.mjs"
-    },
-    "./package.json": "./package.json"
-  },
   "repository": "github:mrmartineau/use-sound",
-  "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  },
+  "files": [
+    "dist"
+  ],
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "typings": "dist/index.d.ts",
   "typesVersions": {
@@ -30,23 +21,35 @@
       ]
     }
   },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --target es2020 --dts --sourcemap --clean --external react --external react-dom --external howler",
     "dev": "tsup src/index.ts --format cjs,esm --target es2020 --dts --sourcemap --external react --external react-dom --external howler --watch",
     "prepare": "tsup src/index.ts --format cjs,esm --target es2020 --dts --sourcemap --clean --external react --external react-dom --external howler",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "release": "release-it"
+    "release": "release-it",
+    "lint": "oxlint",
+    "format": "oxfmt"
   },
-  "files": [
-    "dist"
-  ],
   "dependencies": {
     "howler": "^2.2.4"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
     "@chromatic-com/storybook": "^5.0.1",
+    "@mrmartineau/kit": "^1.1.0",
     "@storybook/addon-a11y": "^10.2.15",
     "@storybook/addon-docs": "^10.2.15",
     "@storybook/addon-vitest": "^10.2.15",
@@ -55,23 +58,14 @@
     "@types/jest": "^30.0.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@typescript-eslint/eslint-plugin": "~8.56.1",
-    "@typescript-eslint/parser": "~8.56.1",
     "@vitejs/plugin-react": "^5.1.4",
     "@vitest/browser-playwright": "^4.0.18",
     "@vitest/coverage-v8": "^4.0.18",
-    "babel-eslint": "10.x",
     "babel-loader": "^10.0.0",
-    "eslint": "~10.0.2",
-    "eslint-config-react-app": "^7.0.1",
-    "eslint-plugin-flowtype": "~8.0.3",
-    "eslint-plugin-import": "~2.32.0",
-    "eslint-plugin-jsx-a11y": "6.x",
-    "eslint-plugin-react": "~7.37.5",
-    "eslint-plugin-react-hooks": "~7.0.1",
-    "eslint-plugin-storybook": "^10.2.15",
     "focus-visible": "^5.0.2",
     "husky": "^9.1.7",
+    "oxfmt": "^0.79.0",
+    "oxlint": "^1.94.0",
     "playwright": "^1.58.2",
     "prop-types": "^15.8.1",
     "react": "^19.2.4",
@@ -88,11 +82,5 @@
   },
   "peerDependencies": {
     "react": ">=16.8"
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
   }
 }

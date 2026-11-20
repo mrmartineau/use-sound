@@ -1,21 +1,20 @@
-import React from 'react';
-import { animated, useSpring } from 'react-spring';
-import styled from 'styled-components';
-import useSound from '../../src';
+import React from 'react'
+import { animated, useSpring } from 'react-spring'
+import styled from 'styled-components'
+import useSound from '../../src'
+import { PRIMARY } from '../helpers/constants'
+import popDown from '../sounds/pop-down.mp3'
+import popUpOff from '../sounds/pop-up-off.mp3'
+import popUpOn from '../sounds/pop-up-on.mp3'
 
-import { PRIMARY } from '../helpers/constants';
-import popDown from '../sounds/pop-down.mp3';
-import popUpOff from '../sounds/pop-up-off.mp3';
-import popUpOn from '../sounds/pop-up-on.mp3';
-
-const BORDER_WIDTH = 2;
+const BORDER_WIDTH = 2
 
 function CheckboxDemo() {
-  const [isChecked, setIsChecked] = React.useState(false);
+  const [isChecked, setIsChecked] = React.useState(false)
 
-  const [playActive] = useSound(popDown, { volume: 0.25 });
-  const [playOn] = useSound(popUpOn, { volume: 0.25 });
-  const [playOff] = useSound(popUpOff, { volume: 0.25 });
+  const [playActive] = useSound(popDown, { volume: 0.25 })
+  const [playOn] = useSound(popUpOn, { volume: 0.25 })
+  const [playOff] = useSound(popUpOff, { volume: 0.25 })
 
   return (
     <Checkbox
@@ -23,14 +22,14 @@ function CheckboxDemo() {
       checked={isChecked}
       size={24}
       onChange={() => {
-        setIsChecked(!isChecked);
+        setIsChecked(!isChecked)
       }}
       onMouseDown={playActive}
       onMouseUp={() => {
-        isChecked ? playOff() : playOn();
+        isChecked ? playOff() : playOn()
       }}
     />
-  );
+  )
 }
 
 const Checkbox = ({
@@ -42,36 +41,36 @@ const Checkbox = ({
   onMouseDown,
   onMouseUp,
 }) => {
-  const [active, setActive] = React.useState(false);
+  const [active, setActive] = React.useState(false)
 
   const springConfig = {
     tension: 400,
     friction: 22,
     clamp: !checked,
-  };
+  }
 
-  const filledScale = checked ? (active ? 1.4 : 1) : 0;
+  const filledScale = checked ? (active ? 1.4 : 1) : 0
   const filledSpring = useSpring({
     transform: `scale(${filledScale})`,
     config: springConfig,
-  });
+  })
 
-  const outlineScale = active ? 0.8 : 1;
+  const outlineScale = active ? 0.8 : 1
   const outlineSpring = useSpring({
     transform: `scale(${outlineScale})`,
     config: springConfig,
-  });
+  })
 
   return (
     <Wrapper>
       <RealCheckbox
         onMouseDown={() => {
-          setActive(true);
-          onMouseDown?.();
+          setActive(true)
+          onMouseDown?.()
         }}
         onMouseUp={() => {
-          setActive(false);
-          onMouseUp?.();
+          setActive(false)
+          onMouseUp?.()
         }}
         onChange={onChange}
         onClick={onChange}
@@ -84,12 +83,12 @@ const Checkbox = ({
         <Text>{label}</Text>
       </VisibleContents>
     </Wrapper>
-  );
-};
+  )
+}
 
 const Wrapper = styled.div`
   position: relative;
-`;
+`
 
 const RealCheckbox = styled.input.attrs({ type: 'checkbox' })`
   position: absolute;
@@ -101,14 +100,14 @@ const RealCheckbox = styled.input.attrs({ type: 'checkbox' })`
   width: 100%;
   height: 100%;
   opacity: 0;
-`;
+`
 
 const VisibleContents = styled.div`
   position: relative;
   z-index: 1;
   display: flex;
   align-items: center;
-`;
+`
 
 const VisibleBox = styled(animated.div)`
   position: relative;
@@ -124,7 +123,7 @@ const VisibleBox = styled(animated.div)`
     outline: 2px auto ${PRIMARY};
     outline-offset: 2px;
   }
-`;
+`
 
 const Filled = styled(animated.div)`
   position: absolute;
@@ -135,12 +134,12 @@ const Filled = styled(animated.div)`
   bottom: 2px;
   background: ${PRIMARY};
   border-radius: 2px;
-`;
+`
 
 const Text = styled.span`
   font-size: 16px;
   font-family: var(--font-family);
   color: #555;
-`;
+`
 
-export default CheckboxDemo;
+export default CheckboxDemo

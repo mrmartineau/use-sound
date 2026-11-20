@@ -1,34 +1,32 @@
-import React from 'react';
-import styled from 'styled-components';
-import useSound from '../../src';
+import React from 'react'
+import styled from 'styled-components'
+import useSound from '../../src'
+import { PRIMARY } from '../helpers/constants'
+import Spacer from '../helpers/Spacer'
+import UnstyledButton from '../helpers/UnstyledButton'
+import popsSfx from '../sounds/rising-pops.mp3'
 
-import popsSfx from '../sounds/rising-pops.mp3';
-
-import UnstyledButton from '../helpers/UnstyledButton';
-import Spacer from '../helpers/Spacer';
-import { PRIMARY } from '../helpers/constants';
-
-const ARROW_DELAY = 125;
+const ARROW_DELAY = 125
 
 function Hover() {
-  const [play, { stop }] = useSound(popsSfx, { volume: 0.5 });
+  const [play, { stop }] = useSound(popsSfx, { volume: 0.5 })
 
-  const [isHovering, setIsHovering] = React.useState(false);
+  const [isHovering, setIsHovering] = React.useState(false)
 
   return (
     <Button
       onMouseEnter={() => {
-        setIsHovering(true);
-        play();
+        setIsHovering(true)
+        play()
       }}
       onMouseLeave={() => {
-        setIsHovering(false);
-        stop();
+        setIsHovering(false)
+        stop()
       }}
     >
       <ButtonContents isHovering={isHovering}>Hover over me!</ButtonContents>
     </Button>
-  );
+  )
 }
 
 const ButtonContents = ({ isHovering, children }) => {
@@ -66,9 +64,7 @@ const ButtonContents = ({ isHovering, children }) => {
           strokeLinejoin="round"
           style={{
             opacity: isHovering ? 1 : 0,
-            transition: `opacity ${
-              isHovering ? 0 : ARROW_DELAY
-            }ms ${ARROW_DELAY}ms`,
+            transition: `opacity ${isHovering ? 0 : ARROW_DELAY}ms ${ARROW_DELAY}ms`,
           }}
         />
         <path
@@ -79,15 +75,13 @@ const ButtonContents = ({ isHovering, children }) => {
           strokeLinejoin="round"
           style={{
             opacity: isHovering ? 1 : 0,
-            transition: `opacity ${
-              isHovering ? 0 : ARROW_DELAY
-            }ms ${ARROW_DELAY * 2}ms`,
+            transition: `opacity ${isHovering ? 0 : ARROW_DELAY}ms ${ARROW_DELAY * 2}ms`,
           }}
         />
       </ArrowSvg>
     </>
-  );
-};
+  )
+}
 
 const Button = styled(UnstyledButton)`
   display: inline-flex;
@@ -96,10 +90,10 @@ const Button = styled(UnstyledButton)`
   margin-top: 16px;
   color: var(--color-text);
   font-weight: var(--font-weight-bold);
-`;
+`
 
 const ArrowSvg = styled.svg`
   transform: translateY(2px);
-`;
+`
 
-export default Hover;
+export default Hover

@@ -1,12 +1,5 @@
-import { HookOptions, ReturnedValue } from './types';
+import { HookOptions, ReturnedValue } from './types'
 export default function useSound(
   src: string | string[],
-  {
-    volume,
-    playbackRate,
-    soundEnabled,
-    interrupt,
-    onload,
-    ...delegated
-  }?: HookOptions
-): ReturnedValue;
+  { volume, playbackRate, soundEnabled, interrupt, onload, ...delegated }?: HookOptions,
+): ReturnedValue
