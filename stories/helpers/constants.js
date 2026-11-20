@@ -1,1 +1,1 @@
-export const PRIMARY = 'hsl(240deg, 85%, 55%)';
+export const PRIMARY = 'hsl(240deg, 85%, 55%)'

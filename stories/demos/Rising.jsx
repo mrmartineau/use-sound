@@ -1,23 +1,21 @@
-import React from 'react';
-import styled from 'styled-components';
-import useSound from '../../src';
-
-import UnstyledButton from '../helpers/UnstyledButton';
-
-import glugSfx from '../sounds/glug-a.mp3';
+import React from 'react'
+import styled from 'styled-components'
+import useSound from '../../src'
+import UnstyledButton from '../helpers/UnstyledButton'
+import glugSfx from '../sounds/glug-a.mp3'
 
 function Rising() {
-  const [playbackRate, setPlaybackRate] = React.useState(0.75);
+  const [playbackRate, setPlaybackRate] = React.useState(0.75)
 
   const [play] = useSound(glugSfx, {
     playbackRate,
     volume: 0.5,
-  });
+  })
 
   const handleClick = () => {
-    setPlaybackRate(playbackRate + 0.1);
-    play();
-  };
+    setPlaybackRate(playbackRate + 0.1)
+    play()
+  }
 
   return (
     <Button onClick={handleClick}>
@@ -25,7 +23,7 @@ function Rising() {
         💖
       </span>
     </Button>
-  );
+  )
 }
 
 const Button = styled(UnstyledButton)`
@@ -38,6 +36,6 @@ const Button = styled(UnstyledButton)`
   &:active {
     transform: scale(1.1);
   }
-`;
+`
 
-export default Rising;
+export default Rising

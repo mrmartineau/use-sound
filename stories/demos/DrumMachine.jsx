@@ -1,28 +1,26 @@
-import React from 'react';
-import styled from 'styled-components';
-import useSound from '../../src';
+import React from 'react'
+import styled from 'styled-components'
+import useSound from '../../src'
+import Button from '../helpers/Button'
+import drumSfx from '../sounds/909-drums.mp3'
 
-import Button from '../helpers/Button';
-
-import drumSfx from '../sounds/909-drums.mp3';
-
-const useKeyboardBindings = map => {
+const useKeyboardBindings = (map) => {
   React.useEffect(() => {
-    const handlePress = ev => {
-      const handler = map[ev.key];
+    const handlePress = (ev) => {
+      const handler = map[ev.key]
 
       if (typeof handler === 'function') {
-        handler();
+        handler()
       }
-    };
+    }
 
-    window.addEventListener('keydown', handlePress);
+    window.addEventListener('keydown', handlePress)
 
     return () => {
-      window.removeEventListener('keydown', handlePress);
-    };
-  }, [map]);
-};
+      window.removeEventListener('keydown', handlePress)
+    }
+  }, [map])
+}
 
 function DrumMachine() {
   const [play] = useSound(drumSfx, {
@@ -32,7 +30,7 @@ function DrumMachine() {
       snare: [666, 290],
       cowbell: [968, 200],
     },
-  });
+  })
 
   // Custom hook that listens for 'keydown',
   // and calls the appropriate handler function.
@@ -41,7 +39,7 @@ function DrumMachine() {
     2: () => play({ id: 'hihat' }),
     3: () => play({ id: 'snare' }),
     4: () => play({ id: 'cowbell' }),
-  });
+  })
 
   return (
     <>
@@ -49,22 +47,13 @@ function DrumMachine() {
       <PressyButton aria-label="kick" onMouseDown={() => play({ id: 'kick' })}>
         1
       </PressyButton>
-      <PressyButton
-        aria-label="hihat"
-        onMouseDown={() => play({ id: 'hihat' })}
-      >
+      <PressyButton aria-label="hihat" onMouseDown={() => play({ id: 'hihat' })}>
         2
       </PressyButton>
-      <PressyButton
-        aria-label="snare"
-        onMouseDown={() => play({ id: 'snare' })}
-      >
+      <PressyButton aria-label="snare" onMouseDown={() => play({ id: 'snare' })}>
         3
       </PressyButton>
-      <PressyButton
-        aria-label="cowbell"
-        onMouseDown={() => play({ id: 'cowbell' })}
-      >
+      <PressyButton aria-label="cowbell" onMouseDown={() => play({ id: 'cowbell' })}>
         4
       </PressyButton>
       <p>
@@ -73,7 +62,7 @@ function DrumMachine() {
         Type "1" through "4".
       </p>
     </>
-  );
+  )
 }
 
 const PressyButton = styled(Button)`
@@ -84,6 +73,6 @@ const PressyButton = styled(Button)`
   &:active {
     transform: scale(1.1);
   }
-`;
+`
 
-export default DrumMachine;
+export default DrumMachine

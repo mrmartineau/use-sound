@@ -1,4 +1,4 @@
-import react from '@vitejs/plugin-react';
+import react from '@vitejs/plugin-react'
 
 /** @type { import('@storybook/react-vite').StorybookConfig } */
 const config = {
@@ -14,7 +14,7 @@ const config = {
     return {
       ...viteConfig,
       plugins: [...(viteConfig.plugins ?? []), react()],
-    };
+    }
   },
-};
-export default config;
+}
+export default config

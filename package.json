@@ -1,11 +1,26 @@
 {
   "name": "@mrmartineau/use-sound",
+  "version": "5.1.0",
+  "license": "MIT",
   "author": "Josh Comeau",
   "contributors": [
     "Zander Martineau"
   ],
-  "version": "5.1.0",
+  "repository": "github:mrmartineau/use-sound",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
   "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/index.d.ts"
+      ]
+    }
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -15,20 +30,8 @@
     },
     "./package.json": "./package.json"
   },
-  "repository": "github:mrmartineau/use-sound",
-  "license": "MIT",
   "publishConfig": {
     "access": "public"
-  },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "typings": "dist/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "*": [
-        "dist/index.d.ts"
-      ]
-    }
   },
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --target es2020 --dts --sourcemap --clean --external react --external react-dom --external howler",
@@ -40,9 +43,6 @@
     "lint": "oxlint",
     "format": "oxfmt"
   },
-  "files": [
-    "dist"
-  ],
   "dependencies": {
     "howler": "^2.2.4"
   },

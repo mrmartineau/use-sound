@@ -1,13 +1,12 @@
-import React from 'react';
-import useSound from '../../src';
-
-import boopSfx from '../sounds/boop.mp3';
-import Button from '../helpers/Button';
+import React from 'react'
+import useSound from '../../src'
+import Button from '../helpers/Button'
+import boopSfx from '../sounds/boop.mp3'
 
 const Simple = () => {
-  const [playBoop] = useSound(boopSfx);
+  const [playBoop] = useSound(boopSfx)
 
-  return <Button onClick={playBoop}>Play sound</Button>;
-};
+  return <Button onClick={playBoop}>Play sound</Button>
+}
 
-export default Simple;
+export default Simple

@@ -1,11 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from 'react'
+import styled from 'styled-components'
 
-const PRIMARY = 'hsl(240deg, 85%, 55%)';
+const PRIMARY = 'hsl(240deg, 85%, 55%)'
 
-const Button = props => {
-  return <DefaultButton {...props} />;
-};
+const Button = (props) => {
+  return <DefaultButton {...props} />
+}
 
 const UnstyledButton = styled.button`
   margin: 0;
@@ -20,7 +20,7 @@ const UnstyledButton = styled.button`
     outline: 2px auto ${PRIMARY};
     outline-offset: 2px;
   }
-`;
+`
 
 const DefaultButton = styled(UnstyledButton)`
   color: white;
@@ -31,6 +31,6 @@ const DefaultButton = styled(UnstyledButton)`
   font-weight: bold;
   background-color: ${PRIMARY};
   border-radius: 5px;
-`;
+`
 
-export default Button;
+export default Button
